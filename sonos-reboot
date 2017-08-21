@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+
+import requests
+import re
+
+IPS = ['192.168.0.40', '192.168.0.41']
+DEBUG = False
+
+for ip in IPS:
+    if DEBUG:
+        print(ip)
+    url = 'http://%s:1400/reboot' % (ip, )
+    html = requests.get(url).text
+    match = re.search('value="([^"]+)"', html)
+    token = match.group(1)
+    if DEBUG:
+        print("token:", token)
+    message = requests.post(url, {'csrfToken': token}).text
+    if DEBUG:
+        print("reboot post response:", message)
